@@ -30,7 +30,7 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                                                      {'label': 'CCAFS SLC-40', 'value': 'CCAFS SLC-40'}
                                                      ],
                                              value='ALL',
-                                             placeholder='Select a Launch Site here',
+                                             placeholder='Select a Launch Site',
                                              searchable=True
                                              ),
                                 html.Br(),
@@ -61,7 +61,7 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
 # TASK 2:
 # Add a callback function for `site-dropdown` as input, `success-pie-chart` as output
 # Function decorator to specify function input and output
-@app.callback(Output(component_id='success-pie-chart', component_property='figure'),
+@app.callback(Output(component_id='success-pie-chart', component_property='value'),
               Input(component_id='site-dropdown', component_property='value'))
 def get_pie_chart(entered_site):
     filtered_df = spacex_df
@@ -86,12 +86,21 @@ def scatter(entered_site,payload):
     # thought reusing filtered_df may cause issues, but tried it out of curiosity and it seems to be working fine
     
     if entered_site=='ALL':
-        fig=px.scatter(filtered_df,x='Payload Mass (kg)',y='class',color='Booster Version Category',title='Success count on Payload mass for all sites')
+       fig = px.scatter(filtered_df,
+                        x='Payload Mass (kg)',
+                        y='class',
+                        color='Booster Version Category',
+                        title='Correlation Between Payload and Success for all Sites'
+                        )
         return fig
     else:
-        fig=px.scatter(filtered_df[filtered_df['Launch Site']==entered_site],x='Payload Mass (kg)',y='class',color='Booster Version Category',title=f"Success count on Payload mass for site {entered_site}")
+        fig = px.scatter(filtered_df[filtered_df['Launch Site']==entered_site],
+                        x='Payload Mass (kg)',
+                        y='class',
+                        color='Booster Version Category',
+                        title=f'Correlation Between Payload and Success for site {entered_site}'
+                        )
         return fig
-
 # Run the app
 if __name__ == '__main__':
     app.run_server()
